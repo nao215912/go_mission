@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go_mission/api/app"
+	"go_mission/api/handler/user"
 	"time"
 )
 
@@ -12,13 +13,15 @@ func NewRouter(app *app.App) *gin.Engine {
 
 	useCROS(r)
 
+	user.NewRouter(r.Group("/user"), app)
+
 	return r
 }
 
 func useCROS(r *gin.Engine) {
 	cfg := cors.Config{
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"},
-		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authentication"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "x-token"},
 		AllowCredentials: false,
 		AllowAllOrigins:  true,
 		MaxAge:           12 * time.Hour,

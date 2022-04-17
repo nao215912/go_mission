@@ -1,18 +1,14 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"go_mission/api/app"
 	"go_mission/api/config"
 	"go_mission/api/handler"
-	"go_mission/api/handler/health"
 	"log"
 )
 
 func main() {
-	r := gin.Default()
-	health.NewRouter(r.Group("/v1/health"))
-	log.Fatalf("%+v", r.Run())
+	log.Fatalf("%+v", serve())
 }
 
 func serve() error {

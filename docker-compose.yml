@@ -39,7 +39,6 @@ services:
       MYSQL_PASSWORD: go_mission
       MYSQL_ROOT_PASSWORD: go_mission
       TZ: Asia/Tokyo
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     restart: on-failure
 
   swagger-ui:
