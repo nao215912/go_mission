@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: build
+    depends_on:
+      - db
+    volumes:
+      - ./:/go/api
+    command: air
+    ports:
+      - "8080:8080"
+      - "2345:2345"
+    security_opt:
+      - apparmor:unconfined
+    cap_add:
+      - SYS_PTRACE
+    environment:
+      MYSQL_DATABASE: go_mission
+      MYSQL_HOST: db
+      MYSQL_USER: go_mission
+      MYSQL_PASSWORD: go_mission
+    restart: on-failure
+
+  db:
+    image: mysql:latest
+    container_name: db
+    volumes:
+      - ./db-data:/var/lib/mysql
+      - ./ddl/:/docker-entrypoint-initdb.d/
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: go_mission
+      MYSQL_USER: go_mission
+      MYSQL_PASSWORD: go_mission
+      MYSQL_ROOT_PASSWORD: go_mission
+      TZ: Asia/Tokyo
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: on-failure
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./openapi.yml:/data/openapi.yml
+    environment:
+      SWAGGER_JSON: /data/openapi.yml
