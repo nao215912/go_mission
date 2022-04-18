@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go_mission/api/app"
+	"go_mission/api/handler/gacha"
 	"go_mission/api/handler/user"
 	"time"
 )
@@ -14,6 +15,7 @@ func NewRouter(app *app.App) *gin.Engine {
 	useCROS(r)
 
 	user.NewRouter(r.Group("/user"), app)
+	gacha.NewRouter(r.Group("/gacha"), app)
 
 	return r
 }

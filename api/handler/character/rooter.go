@@ -1,4 +1,4 @@
-package gacha
+package character
 
 import (
 	"github.com/gin-gonic/gin"

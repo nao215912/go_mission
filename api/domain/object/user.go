@@ -5,12 +5,12 @@ import (
 )
 
 type User struct {
-	ID        uint      `gorm:"primarykey" json:"-"`
-	CreatedAt time.Time `gorm:"not null" json:"-"`
-	UpdatedAt time.Time `gorm:"not null" json:"-"`
+	ID        uint      `gorm:"column:id"`
+	CreatedAt time.Time `gorm:"column:created_at"`
+	UpdatedAt time.Time `gorm:"column:updated_at"`
 
-	Name  string `gorm:"not null" json:"name"`
-	Token string `gorm:"not null" json:"token"`
+	Name  string `gorm:"column:name"`
+	Token string `gorm:"column:token"`
 }
 
 //var commonIV = []byte{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f}

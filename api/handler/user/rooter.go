@@ -14,5 +14,4 @@ func NewRouter(r *gin.RouterGroup, app *app.App) {
 	r.POST("/create", h.Create)
 	r.GET("/get", h.Get)
 	r.PUT("/update", h.Update)
-
 }

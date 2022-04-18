@@ -7,7 +7,8 @@ import (
 
 type Dao interface {
 	User() repository.User
-	Gacha() repository.Gacha
+	Character() repository.Character
+	UserCharacter() repository.UserCharacter
 }
 
 type dao struct {
@@ -27,6 +28,10 @@ func (d *dao) User() repository.User {
 	return NewUser(d.db)
 }
 
-func (d *dao) Gacha() repository.Gacha {
-	return NewGacha(d.db)
+func (d *dao) Character() repository.Character {
+	return NewCharacter(d.db)
+}
+
+func (d *dao) UserCharacter() repository.UserCharacter {
+	return NewUserCharacter(d.db)
 }

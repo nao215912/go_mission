@@ -33,3 +33,12 @@ func (r *user) UpdateByName(ctx context.Context, user *object.User, name string)
 	}
 	return &entity, nil
 }
+
+func (r *user) FindByName(ctx context.Context, name string) (*object.User, error) {
+	entity := new(object.User)
+	tx := r.db.WithContext(ctx).Where("name = ?", name).Take(entity)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	return entity, nil
+}
