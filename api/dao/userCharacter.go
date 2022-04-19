@@ -24,3 +24,26 @@ func (r *userCharacter) Create(ctx context.Context, userCharacters []*object.Use
 	}
 	return entities, nil
 }
+
+func (r *userCharacter) FindByUsername(ctx context.Context, username string) ([]*object.UserCharacterResponse, error) {
+	var entities []*object.UserCharacterResponse
+	const query = `
+					select
+						characters.name,
+						user_characters.user_id,
+						user_characters.character_id
+					from
+						user_characters
+					join
+						characters on user_characters.character_id = characters.id
+					join
+						users on user_characters.user_id = users.id
+					where
+						users.name = ?;
+					`
+	tx := r.db.WithContext(ctx).Raw(query, username).Scan(&entities)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	return entities, nil
+}

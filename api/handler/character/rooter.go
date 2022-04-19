@@ -11,5 +11,5 @@ type handler struct {
 
 func NewRouter(r *gin.RouterGroup, app *app.App) {
 	h := &handler{app: app}
-	r.POST("/draw", h.Draw)
+	r.GET("/list", h.List)
 }

@@ -1,16 +1,24 @@
 package object
 
 import (
+	"gorm.io/gorm"
+	"strconv"
 	"time"
 )
 
 type User struct {
-	ID        uint      `gorm:"column:id"`
-	CreatedAt time.Time `gorm:"column:created_at"`
-	UpdatedAt time.Time `gorm:"column:updated_at"`
+	ID        uint      `gorm:"column:id" json:"-"`
+	CreatedAt time.Time `gorm:"column:created_at" json:"-"`
+	UpdatedAt time.Time `gorm:"column:updated_at" json:"-"`
 
-	Name  string `gorm:"column:name"`
-	Token string `gorm:"column:token"`
+	SID   string `json:"userID"`
+	Name  string `gorm:"column:name" json:"name"`
+	Token string `gorm:"column:token" json:"token"`
+}
+
+func (u *User) AfterCreate(tx *gorm.DB) (err error) {
+	u.SID = strconv.FormatUint(uint64(u.ID), 10)
+	return nil
 }
 
 //var commonIV = []byte{0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f}

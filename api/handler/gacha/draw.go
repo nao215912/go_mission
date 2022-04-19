@@ -38,8 +38,7 @@ func (h *handler) Draw(c *gin.Context) {
 	characters := make([]*object.Character, 0, req.Times)
 	for i := 0; i < req.Times; i++ {
 		character := &object.Character{
-			Name:        fmt.Sprintf("name %d", i),
-			CharacterID: fmt.Sprintf("character_id %d", i),
+			Name: fmt.Sprintf("name %d", i),
 		}
 		characters = append(characters, character)
 	}
