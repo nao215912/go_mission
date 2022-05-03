@@ -1,8 +1,8 @@
 package user
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
+	"go_mission/api/handler/auth"
 	"go_mission/api/handler/httperror"
 	"net/http"
 )
@@ -18,15 +18,9 @@ func (h *handler) Update(c *gin.Context) {
 		httperror.BadRequest(c, err)
 		return
 	}
-	token := c.Request.Header.Get("x-token")
-	if token == "" {
-		httperror.BadRequest(c, fmt.Errorf("invalid token"))
-		return
-	}
-	userRepository := h.app.Dao.User()
-	user, err := userRepository.FindByToken(ctx, token)
+	user, err := auth.UserOf(c)
 	if err != nil {
-		httperror.BadRequest(c, fmt.Errorf("invalid token"))
+		httperror.BadRequest(c, err)
 	}
 	repository := h.app.Dao.User()
 	_, err = repository.UpdateByName(ctx, user, req.Name)

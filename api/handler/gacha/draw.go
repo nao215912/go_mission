@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go_mission/api/domain/object"
+	"go_mission/api/handler/auth"
 	"go_mission/api/handler/httperror"
 	"net/http"
 )
@@ -23,15 +24,9 @@ func (h *handler) Draw(c *gin.Context) {
 		httperror.BadRequest(c, err)
 		return
 	}
-	token := c.Request.Header.Get("x-token")
-	if token == "" {
-		httperror.BadRequest(c, fmt.Errorf("incorrect Header"))
-		return
-	}
-	userRepository := h.app.Dao.User()
-	user, err := userRepository.FindByToken(ctx, token)
+	user, err := auth.UserOf(c)
 	if err != nil {
-		httperror.BadRequest(c, fmt.Errorf("invalid token"))
+		httperror.BadRequest(c, err)
 	}
 	characters := make([]*object.Character, 0, req.Times)
 	for i := 0; i < req.Times; i++ {

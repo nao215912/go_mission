@@ -1,8 +1,8 @@
 package user
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
+	"go_mission/api/handler/auth"
 	"go_mission/api/handler/httperror"
 	"net/http"
 )
@@ -12,16 +12,9 @@ type GetResponse struct {
 }
 
 func (h *handler) Get(c *gin.Context) {
-	ctx := c.Request.Context()
-	token := c.Request.Header.Get("x-token")
-	if token == "" {
-		httperror.BadRequest(c, fmt.Errorf("incorrect Header"))
-		return
-	}
-	userRepository := h.app.Dao.User()
-	user, err := userRepository.FindByToken(ctx, token)
+	user, err := auth.UserOf(c)
 	if err != nil {
-		httperror.BadRequest(c, fmt.Errorf("invalid token"))
+		httperror.BadRequest(c, err)
 	}
 	c.JSON(http.StatusOK, &GetResponse{Name: user.Name})
 
