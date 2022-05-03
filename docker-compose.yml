@@ -30,7 +30,7 @@ services:
     container_name: db
     volumes:
       - ./db-data:/var/lib/mysql
-      - ./ddl/:/docker-entrypoint-initdb.d/
+      - ./db-init/:/docker-entrypoint-initdb.d/
     ports:
       - "3306:3306"
     environment:

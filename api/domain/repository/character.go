@@ -7,4 +7,5 @@ import (
 
 type Character interface {
 	Create(ctx context.Context, characters []*object.Character) ([]*object.Character, error)
+	FindByRand(ctx context.Context, n int) ([]*object.Character, error)
 }
