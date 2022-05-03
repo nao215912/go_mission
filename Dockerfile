@@ -3,8 +3,6 @@ FROM golang:1.17-alpine3.14 as build
 
 WORKDIR /go/api
 
-COPY . .
-
 ARG AIR_VERSION=v1.27.3
 ARG DLV_VERSION=v1.7.1
 
@@ -14,6 +12,8 @@ RUN set -eux && \
   go install github.com/cosmtrek/air@${AIR_VERSION} && \
   go install github.com/go-delve/delve/cmd/dlv@${DLV_VERSION} && \
   go install golang.org/x/tools/cmd/goimports@latest
+
+COPY . .
 
 RUN set -eux && \
   go build -o go_mission ./api/main.go
