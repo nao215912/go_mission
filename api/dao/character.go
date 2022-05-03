@@ -15,12 +15,10 @@ func NewCharacter(db *gorm.DB) repository.Character {
 	return &character{db: db}
 }
 
-// Create Todo:同じアドレスを指しているポインターの是非
 func (r *character) Create(ctx context.Context, characters []*object.Character) ([]*object.Character, error) {
-	entities := characters
-	tx := r.db.WithContext(ctx).Select("id", "name").Create(&entities)
+	tx := r.db.WithContext(ctx).Select("id", "name").Create(&characters)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
-	return entities, nil
+	return characters, nil
 }

@@ -13,6 +13,7 @@ type handler struct {
 func NewRouter(r *gin.RouterGroup, app *app.App) {
 	h := &handler{app: app}
 	r.POST("/create", h.Create)
+
 	r.Use(auth.Middleware(app))
 	r.GET("/get", h.Get)
 	r.PUT("/update", h.Update)

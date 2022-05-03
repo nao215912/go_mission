@@ -16,22 +16,20 @@ type CreateResponse struct {
 }
 
 func (h *handler) Create(c *gin.Context) {
-	ctx := c.Request.Context()
 	req := new(CreateRequest)
 	if err := c.ShouldBindJSON(req); err != nil {
 		httperror.BadRequest(c, err)
 		return
 	}
-	entity := &object.User{
+
+	user := &object.User{
 		Name: req.Name,
 	}
-
-	repository := h.app.Dao.User()
-	entity, err := repository.Create(ctx, entity)
+	user, err := h.app.Dao.User().Create(c.Request.Context(), user)
 	if err != nil {
 		httperror.InternalServerError(c, err)
 		return
 	}
 
-	c.JSON(http.StatusOK, &CreateResponse{Token: entity.Token})
+	c.JSON(http.StatusOK, &CreateResponse{Token: user.Token})
 }

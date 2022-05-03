@@ -16,6 +16,6 @@ func (h *handler) Get(c *gin.Context) {
 	if err != nil {
 		httperror.BadRequest(c, err)
 	}
-	c.JSON(http.StatusOK, &GetResponse{Name: user.Name})
 
+	c.JSON(http.StatusOK, &GetResponse{Name: user.Name})
 }

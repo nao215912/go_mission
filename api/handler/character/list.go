@@ -13,16 +13,16 @@ type ListResponse struct {
 }
 
 func (h *handler) List(c *gin.Context) {
-	ctx := c.Request.Context()
 	user, err := auth.UserOf(c)
 	if err != nil {
 		httperror.BadRequest(c, err)
 	}
-	userCharacterRepository := h.app.Dao.UserCharacter()
-	userCharacterResponse, err := userCharacterRepository.FindByUsername(ctx, user.Name)
+
+	userCharacterResponse, err := h.app.Dao.UserCharacter().FindByUsername(c.Request.Context(), user.Name)
 	if err != nil {
 		httperror.InternalServerError(c, err)
 		return
 	}
+
 	c.JSON(http.StatusOK, &ListResponse{Characters: userCharacterResponse})
 }

@@ -21,7 +21,6 @@ type DrawResponse struct {
 
 func (h *handler) Draw(c *gin.Context) {
 	ctx := c.Request.Context()
-
 	req := new(DrawRequest)
 	if err := c.ShouldBindJSON(req); err != nil {
 		httperror.BadRequest(c, err)
@@ -33,15 +32,22 @@ func (h *handler) Draw(c *gin.Context) {
 		httperror.BadRequest(c, err)
 	}
 
-	characters := characters(req.Times)
-
-	characterRepository := h.app.Dao.Character()
-	characters, err = characterRepository.Create(ctx, characters)
+	characters, err := h.app.Dao.Character().Create(ctx, characters(req.Times))
 	if err != nil {
 		httperror.InternalServerError(c, err)
 		return
 	}
 
+	_, err = h.app.Dao.UserCharacter().Create(ctx, userCharacters(user, characters, req))
+	if err != nil {
+		httperror.InternalServerError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, &DrawResponse{Results: characters})
+}
+
+func userCharacters(user *object.User, characters []*object.Character, req *DrawRequest) []*object.UserCharacter {
 	userCharacters := make([]*object.UserCharacter, 0, req.Times)
 	for i := 0; i < req.Times; i++ {
 		userCharacter := &object.UserCharacter{
@@ -50,15 +56,7 @@ func (h *handler) Draw(c *gin.Context) {
 		}
 		userCharacters = append(userCharacters, userCharacter)
 	}
-
-	userCharacterRepository := h.app.Dao.UserCharacter()
-	userCharacters, err = userCharacterRepository.Create(ctx, userCharacters)
-	if err != nil {
-		httperror.InternalServerError(c, err)
-		return
-	}
-
-	c.JSON(http.StatusOK, &DrawResponse{Results: characters})
+	return userCharacters
 }
 
 func characters(n int) []*object.Character {

@@ -12,21 +12,21 @@ type UpdateRequest struct {
 }
 
 func (h *handler) Update(c *gin.Context) {
-	ctx := c.Request.Context()
 	req := new(UpdateRequest)
 	if err := c.ShouldBindJSON(req); err != nil {
 		httperror.BadRequest(c, err)
 		return
 	}
+
 	user, err := auth.UserOf(c)
 	if err != nil {
 		httperror.BadRequest(c, err)
 	}
-	repository := h.app.Dao.User()
-	_, err = repository.UpdateByName(ctx, user, req.Name)
+	_, err = h.app.Dao.User().UpdateByName(c.Request.Context(), user, req.Name)
 	if err != nil {
 		httperror.InternalServerError(c, err)
 		return
 	}
+
 	c.Writer.WriteHeader(http.StatusOK)
 }

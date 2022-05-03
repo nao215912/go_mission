@@ -7,7 +7,7 @@ import (
 )
 
 type Character struct {
-	ID        string    `gorm:"column:id" json:"-"`
+	ID        string    `gorm:"column:id" json:"characterID"`
 	CreatedAt time.Time `gorm:"column:created_at"  json:"-"`
 	UpdatedAt time.Time `gorm:"column:updated_at"  json:"-"`
 
