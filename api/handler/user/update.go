@@ -3,7 +3,6 @@ package user
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go_mission/api/domain/object"
 	"go_mission/api/handler/httperror"
 	"net/http"
 )
@@ -21,19 +20,16 @@ func (h *handler) Update(c *gin.Context) {
 	}
 	token := c.Request.Header.Get("x-token")
 	if token == "" {
-		httperror.BadRequest(c, fmt.Errorf("incorrect Header"))
+		httperror.BadRequest(c, fmt.Errorf("invalid token"))
 		return
 	}
-	entity := &object.User{
-		Token: token,
-		Name:  req.Name,
-	}
-	if err := entity.SetDecryptedName(token); err != nil {
-		httperror.InternalServerError(c, err)
-		return
+	userRepository := h.app.Dao.User()
+	user, err := userRepository.FindByToken(ctx, token)
+	if err != nil {
+		httperror.BadRequest(c, fmt.Errorf("invalid token"))
 	}
 	repository := h.app.Dao.User()
-	entity, err := repository.UpdateByName(ctx, entity, req.Name)
+	_, err = repository.UpdateByName(ctx, user, req.Name)
 	if err != nil {
 		httperror.InternalServerError(c, err)
 		return

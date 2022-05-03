@@ -12,10 +12,10 @@ func main() {
 }
 
 func serve() error {
-	app, err := app.NewApp()
+	a, err := app.NewApp()
 	if err != nil {
 		return err
 	}
 	addr := ":" + config.Port()
-	return handler.NewRouter(app).Run(addr)
+	return handler.NewRouter(a).Run(addr)
 }

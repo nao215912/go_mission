@@ -25,10 +25,6 @@ func (h *handler) Create(c *gin.Context) {
 	entity := &object.User{
 		Name: req.Name,
 	}
-	if err := entity.SetEncryptedToken(req.Name); err != nil {
-		httperror.InternalServerError(c, err)
-		return
-	}
 
 	repository := h.app.Dao.User()
 	entity, err := repository.Create(ctx, entity)

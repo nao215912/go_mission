@@ -28,12 +28,10 @@ func (h *handler) Draw(c *gin.Context) {
 		httperror.BadRequest(c, fmt.Errorf("incorrect Header"))
 		return
 	}
-	user := &object.User{
-		Token: token,
-	}
-	if err := user.SetDecryptedName(token); err != nil {
-		httperror.InternalServerError(c, err)
-		return
+	userRepository := h.app.Dao.User()
+	user, err := userRepository.FindByToken(ctx, token)
+	if err != nil {
+		httperror.BadRequest(c, fmt.Errorf("invalid token"))
 	}
 	characters := make([]*object.Character, 0, req.Times)
 	for i := 0; i < req.Times; i++ {
@@ -43,13 +41,7 @@ func (h *handler) Draw(c *gin.Context) {
 		characters = append(characters, character)
 	}
 	characterRepository := h.app.Dao.Character()
-	characters, err := characterRepository.Create(ctx, characters)
-	if err != nil {
-		httperror.InternalServerError(c, err)
-		return
-	}
-	userRepository := h.app.Dao.User()
-	user, err = userRepository.FindByName(ctx, user.Name)
+	characters, err = characterRepository.Create(ctx, characters)
 	if err != nil {
 		httperror.InternalServerError(c, err)
 		return

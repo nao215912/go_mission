@@ -16,18 +16,16 @@ func (h *handler) List(c *gin.Context) {
 	ctx := c.Request.Context()
 	token := c.Request.Header.Get("x-token")
 	if token == "" {
-		httperror.BadRequest(c, fmt.Errorf("incorrect Header"))
+		httperror.BadRequest(c, fmt.Errorf("invalid token"))
 		return
 	}
-	req := &object.User{
-		Token: token,
-	}
-	if err := req.SetDecryptedName(token); err != nil {
-		httperror.InternalServerError(c, err)
-		return
+	userRepository := h.app.Dao.User()
+	user, err := userRepository.FindByToken(ctx, token)
+	if err != nil {
+		httperror.BadRequest(c, fmt.Errorf("invalid token"))
 	}
 	userCharacterRepository := h.app.Dao.UserCharacter()
-	userCharacterResponse, err := userCharacterRepository.FindByUsername(ctx, req.Name)
+	userCharacterResponse, err := userCharacterRepository.FindByUsername(ctx, user.Name)
 	if err != nil {
 		httperror.InternalServerError(c, err)
 		return
